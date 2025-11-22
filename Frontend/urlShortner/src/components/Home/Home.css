@@ -1,0 +1,52 @@
+/* Home.css */
+
+h1 {
+  color: #1f2937;
+  text-align: center;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px;
+}
+
+input[type="url"] {
+  padding: 8px;
+  width: 25%;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+p a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
+
+.result-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
