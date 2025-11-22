@@ -5,6 +5,7 @@ const {
   redirectShortURL,
   getAnalytics,
   getAllAnalytics,
+  deleteURL,
 } = require("../Controllers/urlController");
 
 const urlRouter = express.Router();
@@ -14,6 +15,8 @@ urlRouter.route("/").post(createShortUrl);
 urlRouter.route("/getAllAnalytics").get(getAllAnalytics);
 
 urlRouter.route("/getAnalytics/:url").get(getAnalytics);
+
+urlRouter.route("/deleteURL").post(deleteURL);
 
 urlRouter.route("/:url").get(redirectShortURL);
 

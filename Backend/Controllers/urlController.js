@@ -34,17 +34,21 @@ async function createShortUrl(req, res) {
 }
 
 async function redirectShortURL(req, res) {
-  const object = await urlModel.findOne({ shortURL: req.params.url });
+  try {
+    const object = await urlModel.findOne({ shortURL: req.params.url });
 
-  if (!object || object.shortURL.length !== 8) {
-    return res.status(400).send("Please supply a Valid Short URL");
+    if (!object || object.shortURL.length !== 8) {
+      return res.status(400).send("Please supply a Valid Short URL");
+    }
+
+    object.visited.push(Date.now());
+
+    await object.save();
+
+    return res.redirect(object.originalURL);
+  } catch (err) {
+    return res.status(500).json({ error: "Internal Server Error" });
   }
-
-  object.visited.push(Date.now());
-
-  await object.save();
-
-  return res.redirect(object.originalURL);
 }
 
 async function getAllAnalytics(req, res) {
@@ -57,16 +61,30 @@ async function getAllAnalytics(req, res) {
 }
 
 async function getAnalytics(req, res) {
-  const object = await urlModel.findOne({ shortURL: req.params.url });
+  try {
+    const object = await urlModel.findOne({ shortURL: req.params.url });
 
-  if (!object || object.shortURL.length !== 8) {
-    return res.status(400).send("Please supply a Valid Short URL");
+    if (!object || object.shortURL.length !== 8) {
+      return res.status(400).send("Please supply a Valid Short URL");
+    }
+
+    const totalVisits = object.visited.length;
+    const lastVisit = formatTimestamp(object.visited[totalVisits - 1]);
+
+    return res.status(200).json({ totalVisits, lastVisit });
+  } catch (err) {
+    return res.status(500).json({ error: "Internal Server Error" });
   }
+}
 
-  const totalVisits = object.visited.length;
-  const lastVisit = formatTimestamp(object.visited[totalVisits - 1]);
-
-  return res.status(200).json({ totalVisits, lastVisit });
+async function deleteURL(req, res) {
+  try {
+    const obj = await urlModel.deleteOne({ shortURL: req.body.shortURL });
+    console.log("Deletion Completed");
+    return res.status(200).send("Deletion Completed");
+  } catch (err) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 }
 
 function formatTimestamp(timestamp) {
@@ -86,4 +104,5 @@ module.exports = {
   redirectShortURL,
   getAllAnalytics,
   getAnalytics,
+  deleteURL,
 };
